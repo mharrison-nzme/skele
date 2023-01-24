@@ -1,5 +1,5 @@
 {
-  "name": "@skele/components",
+  "name": "skele-viewport",
   "version": "1.0.0-alpha.40",
   "description": "Skele custom components for React and React Native.",
   "react-native": "src/index.js",
