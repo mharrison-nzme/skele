@@ -21,9 +21,9 @@
   },
   "homepage": "https://netcetera.gitbooks.io/skele/",
   "peerDependencies": {
-    "prop-types": "15.x || 16.x",
-    "react": "15.x || 16.x",
-    "react-native": ">= 0.40.0"
+    "prop-types": "*",
+    "react": "15.x || 16.x || 17.x",
+    "react-native": "*"
   },
   "publishConfig": {
     "access": "public"
