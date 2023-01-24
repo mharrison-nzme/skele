@@ -1,7 +1,1 @@
-.idea/
-node_modules/
-dist/
-npm-debug.log
-.nyc_output
-coverage/
-.changelog/
+node_modules

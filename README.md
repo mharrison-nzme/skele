@@ -1,41 +1,100 @@
-# <a href="https://netcetera.gitbooks.io/skele/"><img src="logo.png" height="100" alt="Skele Logo" /></a>
+# Skele Components
 
-Skele is an architectural framework that assists building
-**data-driven** apps with **[React](https://facebook.github.io/react/)** or
-**[React Native](https://facebook.github.io/react-native/)**.
-It is extremely well-suited for creating highly **dynamic UIs**,
-that are driven by back-end systems (like Content Management Systems).
+Skele's `components` package is a library of custom components that aid in building React and React Native apps.
 
-[![Build Status](https://img.shields.io/travis/netceteragroup/skele/master.svg?style=flat-square)](https://travis-ci.org/netceteragroup/skele)
-[![Coverage Status](https://img.shields.io/coveralls/netceteragroup/skele/master.svg?style=flat-square)](https://coveralls.io/github/netceteragroup/skele?branch=master)
+## Available Components
 
-## Packages
+### Viewport Tracker
 
-The repository is a monorepo that is composed of several NPM packages.
+Tracks the position and size of a `ScrollView`, `FlatList` or `SectionList` viewport.
+Communicates it to all viewport aware child components.
 
-| Package                            | Description                                       |
-| ---------------------------------- | ------------------------------------------------- |
-| [Classic](/packages/classic)       | The library as a (still) monolithic package.      |
-| [Config](/packages/config)         | Library for setting up layered app configuration. |
-| [Components](/packages/components) | Collection of helpful custom components.          |
-| [Core](/packages/core)             | Essential building blocks of the framework.       |
+#### Usage
 
-## Documentation
+```javascript
+import { Viewport } from '@skele/components'
 
-Check out the API documentation [here](https://netcetera.gitbooks.io/skele/).
+render() {
+  return (
+    <Viewport.Tracker>
+      <ScrollView scrollEventThrottle={16}>
+        { this.props.children }
+      </ScrollView>
+    </Viewport.Tracker>
+  )
+}
+```
 
-## Transitioning from versions prior to 1.0.0-alpha.27
+### Viewport Aware
 
-Please check this [manual](./packages/classic/docs/transitioning-from-girders-elements.md)
+A higher-order component that processes the information communicated by the viewport tracker.
+Determines whether the wrapped component is in or outside the viewport.
+Updates the `inViewport` property of the wrapped component accordingly.
+Invokes `onViewportEnter` and `onViewportLeave` when the component enters or leaves the viewport.
+Note that handling updates of `inViewport` is the preferred way of reacting to visibility changes.
 
-## What does "Skele" mean?
+#### Usage
 
-Skele (скеле) means scaffolding in Macedonian. It is also a stem of skeleton (скелет in Macedonian). It symbolizes that the framework is a construction on which apps rely to stay upright and function.
+```javascript
+import { Image } from 'react-native'
+import { Viewport } from '@skele/components'
+const ViewportAwareImage = Viewport.Aware(Image)
 
-## Credits
+render() {
+  return (
+    <ViewportAwareImage
+      source={{ uri: 'https://facebook.github.io/react-native/img/header_logo.png' }}
+      preTriggerRatio={0.5}
+      onViewportEnter={() => console.log('Entered!')}
+      onViewportLeave={() => console.log('Left!')}
+      innerRef={ref => (this._ref = ref)} />
+  )
+}
+```
 
-Thanks to [Viktorija Bachvarova](https://www.behance.net/viktorijabachvarova) for designing the logo.
+#### Properties
 
-## License
+| Prop | Description | Default |
+|---|---|---|
+|**`preTriggerRatio`**| Determines pre-triggering of `inViewport`. Useful for rendering components beforehand to improve user experience. A ratio of `0.5` means that the effective viewport will be twice the size of the real viewport. | `0` |
+|**`onViewportEnter`**| Invoked when the component enters the viewport. | `null` |
+|**`onViewportLeave`**| Invoked when the component leaves the viewport. | `null` |
+|**`innerRef`**| Allows access to the reference of the wrapped component. | `null` |
 
-[MIT](./LICENSE) &copy; [Netcetera](https://www.netcetera.com)
+### With Placeholder
+
+A higher-order component that can be used to display a placeholder while the wrapped component is not in the viewport.
+This can improve user experience since it can serve as a mechanism for lazy loading.
+
+#### Usage
+
+```javascript
+import { Image, View } from 'react-native'
+import { Viewport } from '@skele/components'
+
+const Placeholder = () =>
+  <View style={{ width: 50, height: 50, backgroundColor: 'darkgrey' }} />
+
+const VAImgWithPlaceholder =
+  Viewport.Aware(
+    Viewport.WithPlaceholder(Image, Placeholder)
+  )
+
+render() {
+  return (
+    <VAImgWithPlaceholder
+      // placeholder={Placeholder} // passing down a placeholder at render time
+      source={{ uri: 'https://facebook.github.io/react-native/img/header_logo.png' }}
+      preTriggerRatio={0.5}
+      retainOnceInViewport={true}
+      style={{ width: 50, height: 50 }} />
+  )
+}
+```
+
+#### Properties
+
+| Prop | Description | Default |
+|---|---|---|
+|**`placeholder`**| Useful for passing down a placeholder at render time. | `null` |
+|**`retainOnceInViewport`**| Whether to keep the wrapped component displayed once it enters the viewport. | `false` |
