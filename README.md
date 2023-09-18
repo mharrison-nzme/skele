@@ -12,7 +12,7 @@ Communicates it to all viewport aware child components.
 #### Usage
 
 ```javascript
-import { Viewport } from '@skele/components'
+import { Viewport } from 'skele-viewport'
 
 render() {
   return (
@@ -37,7 +37,7 @@ Note that handling updates of `inViewport` is the preferred way of reacting to v
 
 ```javascript
 import { Image } from 'react-native'
-import { Viewport } from '@skele/components'
+import { Viewport } from 'skele-viewport'
 const ViewportAwareImage = Viewport.Aware(Image)
 
 render() {
@@ -70,7 +70,7 @@ This can improve user experience since it can serve as a mechanism for lazy load
 
 ```javascript
 import { Image, View } from 'react-native'
-import { Viewport } from '@skele/components'
+import { Viewport } from 'skele-viewport'
 
 const Placeholder = () =>
   <View style={{ width: 50, height: 50, backgroundColor: 'darkgrey' }} />
